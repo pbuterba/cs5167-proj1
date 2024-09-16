@@ -10,12 +10,9 @@
             day: 'numeric',
             year: 'numeric'
         }
-    )
+    );
 
-    let startedTime = new Date();
-    startedTime.setMonth(8);
-    startedTime.setDate(8);
-    startedTime.setFullYear(2024);
+    let startedTime = new Date(2024, 8, 8);
     $: timeSinceStart = Math.round(($time - startedTime) / (1000 * 60 * 60 * 24))
 </script>
 
