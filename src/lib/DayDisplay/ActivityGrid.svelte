@@ -4,7 +4,7 @@
 
     export let activityList;
 
-    let buttonSize = activityList.length <= 4 ? 50 : 40;
+    let buttonSize = activityList.length < 4 ? 50 : 40;
 </script>
 <main>
     {#each activityList as activity}
@@ -14,6 +14,7 @@
 </main>
 <style>
     main {
+        background-color: white;
         margin: 2vh 2vw;
         padding: 1vh 1vw;
         border: 1px solid black;

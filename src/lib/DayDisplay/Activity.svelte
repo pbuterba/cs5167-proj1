@@ -1,10 +1,11 @@
 <script>
     import {toTwelveHourTime} from '../utility-functions.js'
+    import {colorMappings} from '../../data/color-mappings.js';
 
     export let activityData;
 </script>
 
-<main>
+<main style={"background-color: " + colorMappings[activityData.category]}>
     <p>{toTwelveHourTime(activityData.time)}</p>
     <h1>{activityData.name}</h1>
     <p class="duration">{activityData.duration}m</p>
