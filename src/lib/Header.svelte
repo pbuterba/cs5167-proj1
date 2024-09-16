@@ -16,7 +16,6 @@
     startedTime.setMonth(8);
     startedTime.setDate(8);
     startedTime.setFullYear(2024);
-    // @ts-ignore
     $: timeSinceStart = Math.round(($time - startedTime) / (1000 * 60 * 60 * 24))
 </script>
 
