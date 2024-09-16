@@ -4,11 +4,6 @@ export const activityData = {
             'name': 'Church',
             'time': '10:15',
             'duration': 90
-        },
-        {
-            'name': 'AI Homework Meeting',
-            'time': '20:00',
-            'duration': 150
         }
     ],
     '09-14-2024': [
