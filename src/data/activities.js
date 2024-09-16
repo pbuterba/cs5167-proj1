@@ -1,4 +1,18 @@
 export const activityData = {
+    '09-16-2024': [
+        {
+            'name': 'User Interface Class',
+            'time': '13:25',
+            'duration': 55,
+            'category': 'Class'
+        },
+        {
+            'name': 'ENED TA Meeting',
+            'time': '15:35',
+            'duration': 55,
+            'category': 'TA Work'
+        }
+    ],
     '09-15-2024': [
         {
             'name': 'Church',
