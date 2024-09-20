@@ -34,26 +34,27 @@
         let endTime = addMinutesToTime(eventStart, eventDuration);
         if(times.includes(endTime)) {
             eventEnd = endTime;
+        } else if(parseInt(endTime.split(":")[0]) > 23) {
+            eventEnd = '23:45';
+            setDuration();
         }
-        if(eventDuration < 0) {
-            validDuration = false;
-        } else {
-            validDuration = true;
-        }
+        checkDurationBounds();
     }
     const setDuration = () => {
         eventDuration = subtractTimeFromTime(eventEnd, eventStart);
-        if(eventDuration < 0) {
-            validDuration = false;
-        } else {
-            validDuration = true;
-        }
+        checkDurationBounds();
     }
 
     $: setEnd(addMinutesToTime(eventStart, eventDuration));
     $: setDuration(subtractTimeFromTime(eventEnd, eventStart));
 
-    //Check input data - end time after start time
+    function checkDurationBounds() {
+        if(eventDuration < 0) {
+            validDuration = false;
+        } else {
+            validDuration = true;
+        }
+    }
 
 </script>
 <main>
