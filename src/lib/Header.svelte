@@ -24,7 +24,6 @@
             You've been recording activities for:
             <span class="stat">{timeSinceStart} {timeSinceStart === 1 ? "day" : "days"}</span>
         </p>
-        <p>Record your activities for today</p>
         <p>
             Active for:
             <span class="stat">{$elapsedTime}</span>
