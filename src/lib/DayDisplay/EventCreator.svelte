@@ -20,36 +20,36 @@
         times.push(hours + ":" + minutes);
     }
 
-    //Event info variables
-    let eventName = "";
-    let eventStart = hour - 1 + ":" + defaultMinute;
-    let eventEnd = hour - 1 + ":" + defaultMinute;
-    let eventDuration = 0;
-    let eventCategory = "";
+    //Activity info variables
+    let activityName = "";
+    let activityStart = hour - 1 + ":" + defaultMinute;
+    let activityEnd = hour - 1 + ":" + defaultMinute;
+    let activityDuration = 0;
+    let activityCategory = "";
 
     /* Cyclically reactive variables code from
     https://stackoverflow.com/questions/71622971/svelte-how-can-i-declare-two-cyclically-reactive-variables
     */
     const setEnd = () => {
-        let endTime = addMinutesToTime(eventStart, eventDuration);
+        let endTime = addMinutesToTime(activityStart, activityDuration);
         if(times.includes(endTime)) {
-            eventEnd = endTime;
+            activityEnd = endTime;
         } else if(parseInt(endTime.split(":")[0]) > 23) {
-            eventEnd = '23:45';
+            activityEnd = '23:45';
             setDuration();
         }
         checkDurationBounds();
     }
     const setDuration = () => {
-        eventDuration = subtractTimeFromTime(eventEnd, eventStart);
+        activityDuration = subtractTimeFromTime(activityEnd, activityStart);
         checkDurationBounds();
     }
 
-    $: setEnd(addMinutesToTime(eventStart, eventDuration));
-    $: setDuration(subtractTimeFromTime(eventEnd, eventStart));
+    $: setEnd(addMinutesToTime(activityStart, activityDuration));
+    $: setDuration(subtractTimeFromTime(activityEnd, activityStart));
 
     function checkDurationBounds() {
-        if(eventDuration < 0) {
+        if(activityDuration < 0) {
             validDuration = false;
         } else {
             validDuration = true;
@@ -59,19 +59,19 @@
 </script>
 <main>
     <div class="form-control">
-        <label for="name-field">Event Name:</label>
-        <input bind:value={eventName} id="name-field"/>
+        <label for="name-field">Activity Name:</label>
+        <input bind:value={activityName} id="name-field"/>
     </div>
     <div class="form-control">
         <label for="from-field">Time:</label>
         <div class="time-fields">
-            <select id="from-field" bind:value={eventStart}>
+            <select id="from-field" bind:value={activityStart}>
                 {#each times as time}
                     <option value={time}>{toTwelveHourTime(time, true)}</option>
                 {/each}
             </select>
             <label for="to-field">to</label>
-            <select id="to-field" class={validDuration ? "" : "invalid-field"} bind:value={eventEnd}>
+            <select id="to-field" class={validDuration ? "" : "invalid-field"} bind:value={activityEnd}>
                 {#each times as time}
                     <option value={time}>{toTwelveHourTime(time, true)}</option>
                 {/each}
@@ -83,7 +83,7 @@
     </div>
     <div class="form-control">
         <label for="duration-field">Duration (minutes):</label>
-        <input id="duration-field" class={validDuration ? "" : "invalid-field"} type="number" bind:value={eventDuration} />
+        <input id="duration-field" class={validDuration ? "" : "invalid-field"} type="number" bind:value={activityDuration} />
         {#if !validDuration}
             <label for="duration-field" class="error-label">End time cannot be before start time</label>
         {/if}
