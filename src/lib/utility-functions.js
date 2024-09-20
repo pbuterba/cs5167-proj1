@@ -59,7 +59,7 @@ export function getDateText(dateVal) {
     return dayOfWeekText + " " + monthText + " " + dateVal.getDate() + dateSuffix(dateVal.getDate()) + ", " + dateVal.getFullYear();
 }
 
-export function toTwelveHourTime(twentyFourHourTime) {
+export function toTwelveHourTime(twentyFourHourTime, uppercase) {
     let timeComponents = twentyFourHourTime.split(":");
     let hours = parseInt(timeComponents[0]);
     let minutes = parseInt(timeComponents[1]);
@@ -75,5 +75,39 @@ export function toTwelveHourTime(twentyFourHourTime) {
     if(minutes < 10) {
         minutes = "0" + minutes;
     }
+    if(uppercase) {
+        ampm = " " + ampm.toUpperCase();
+    }
     return hours + ":" + minutes + ampm;
+}
+
+export function addMinutesToTime(time, addMinutes) {
+    let timeComponents = time.split(":");
+    let hours = parseInt(timeComponents[0]);
+    let minutes = parseInt(timeComponents[1]);
+    
+    minutes += hours * 60;
+    minutes += addMinutes;
+
+    hours = Math.floor(minutes/60);
+    minutes -= Math.floor(minutes/60) * 60;
+    if(minutes < 10) {
+        minutes = "0" + minutes;
+    }
+
+    return hours + ":" + minutes;
+}
+
+export function subtractTimeFromTime(subtractFromTime, subtractTime) {
+    let subtractFromTimeComponents = subtractFromTime.split(":");
+    let subtractFromTimeHours = parseInt(subtractFromTimeComponents[0]);
+    let subtractFromTimeMinutes = parseInt(subtractFromTimeComponents[1]);
+    subtractFromTimeMinutes += subtractFromTimeHours * 60;
+
+    let subtractTimeComponents = subtractTime.split(":");
+    let subtractTimeHours = parseInt(subtractTimeComponents[0]);
+    let subtractTimeMinutes = parseInt(subtractTimeComponents[1]);
+    subtractTimeMinutes += subtractTimeHours * 60;
+    
+    return subtractFromTimeMinutes - subtractTimeMinutes;
 }

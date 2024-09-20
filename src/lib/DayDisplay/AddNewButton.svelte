@@ -1,14 +1,22 @@
 <script>
+    import {createEventDispatcher} from 'svelte';
     import AddIcon from '../../assets/AddIcon.svelte';
 
     export let size;
+
+    const dispatch = createEventDispatcher();
+
+    function addNewEvent() {
+        dispatch('newEvent');
+    }
 </script>
-<main>
+<button on:click={addNewEvent}>
     <AddIcon width={size} />
     <p>Add new activity</p>
-</main>
+</button>
 <style>
-    main {
+    button {
+        background: white;
         border: 1px solid transparent;
         display: flex;
         justify-content: center;
@@ -16,12 +24,12 @@
         height: 50%;
         margin: 0.5vh 0.5vw;
     }
-    main:hover {
+    button:hover {
         opacity: 0.7;
         cursor: pointer;
         border: 1px dotted gray;
     }
-    main * {
+    button * {
         margin: auto 1vw;
     }
 </style>

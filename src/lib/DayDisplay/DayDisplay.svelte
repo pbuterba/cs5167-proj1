@@ -1,5 +1,6 @@
 <script>
     import ActivityGrid from './ActivityGrid.svelte';
+    import EventCreator from './EventCreator.svelte';
     import {getDateSlug, getDateText} from '../utility-functions.js';
 
     export let dayActivities;
@@ -11,11 +12,16 @@
     let currDate = new Date();
     let currDateSlug = getDateSlug(currDate);
     let headerText = dateSlug === currDateSlug ? "Today's activities:" : "Edit activities for " + dateText;
+
+    let showEventCreator = false;
 </script>
 
 <main>
     <h1>{headerText}</h1>
-    <ActivityGrid activityList={dayActivities}/>
+    <ActivityGrid activityList={dayActivities} on:newEvent={() => {showEventCreator = true;}} />
+    {#if showEventCreator}
+        <EventCreator date={date} />
+    {/if}
 </main>
 
 <style>

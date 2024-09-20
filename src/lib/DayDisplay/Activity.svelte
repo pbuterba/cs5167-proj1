@@ -6,7 +6,7 @@
 </script>
 
 <main style={"background-color: " + colorMappings[activityData.category]}>
-    <p>{toTwelveHourTime(activityData.time)}</p>
+    <p>{toTwelveHourTime(activityData.time, false)}</p>
     <h1>{activityData.name}</h1>
     <p class="duration">{activityData.duration}m</p>
 </main>
