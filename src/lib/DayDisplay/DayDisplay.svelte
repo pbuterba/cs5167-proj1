@@ -18,7 +18,7 @@
 
 <main>
     <h1>{headerText}</h1>
-    <ActivityGrid activityList={dayActivities} on:newEvent={() => {showEventCreator = true;}} />
+    <ActivityGrid activityList={dayActivities} showAddButton={!showEventCreator} on:newEvent={() => {showEventCreator = true;}} />
     {#if showEventCreator}
         <ActivityCreator date={date} />
     {/if}

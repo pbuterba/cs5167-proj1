@@ -4,16 +4,17 @@
     import AddNewButton from './AddNewButton.svelte';
 
     export let activityList;
+    export let showAddButton;
 
     const dispatch = createEventDispatcher();
-
-    let buttonSize = activityList.length < 4 ? 50 : 40;
 </script>
 <main>
     {#each activityList as activity}
         <Activity activityData={activity} />
     {/each}
-    <AddNewButton size={buttonSize} on:newEvent />
+    {#if showAddButton}
+        <AddNewButton size={40} on:newEvent />
+    {/if}
 </main>
 <style>
     main {

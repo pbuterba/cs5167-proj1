@@ -6,7 +6,7 @@
     let hour = date.getHours();
     let minute = date.getMinutes();
 
-    let defaultMinute = Math.round(minute/15) * 15 < 10 ? "0" + Math.round(minute/15) * 15 : Math.round(minute/15) * 15;
+    let defaultMinute = Math.floor(minute/15) * 15 < 10 ? "0" + Math.floor(minute/15) * 15 : Math.floor(minute/15) * 15;
     let validDuration = true;
 
     //Populate time list
