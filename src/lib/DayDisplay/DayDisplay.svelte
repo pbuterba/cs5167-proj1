@@ -57,8 +57,6 @@
 
         //Update displayed time
         displayedTime = new Date(displayedYear, displayedMonth - 1, displayedDay);
-        console.log("Current:" + currDate);
-        console.log("Displayed: " + displayedDate);
     }
     function forwardOneDay() {
         //Get current day in components
