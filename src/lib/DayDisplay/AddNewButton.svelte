@@ -21,7 +21,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 50%;
+        height: 5vh;
         margin: 0.5vh 0.5vw;
     }
     button:hover {

@@ -1,6 +1,9 @@
 <script>
+    import {createEventDispatcher} from 'svelte';
     import {toTwelveHourTime, addMinutesToTime, subtractTimeFromTime} from "../utility-functions.js";
     import {colorMappings} from '../../data/color-mappings.js';
+
+    const dispatch = createEventDispatcher();
 
     let date = new Date();
 
@@ -13,13 +16,12 @@
     let defaultHour;
     let defaultMinute;
     let totalMinutes = minute + hour * 60;
-    let defaultTotalMinutes = Math.floor((totalMinutes - defaultStepBack)/timeIncrement) * timeIncrement;
+    let defaultTotalMinutes = Math.floor((defaultStepBack <= totalMinutes ? totalMinutes - defaultStepBack : 0)/timeIncrement) * timeIncrement;
     defaultHour = Math.floor(defaultTotalMinutes/60);
     defaultMinute = defaultTotalMinutes - (Math.floor(defaultTotalMinutes/60) * 60);
     if(defaultMinute < 10) {
         defaultMinute = "0" + defaultMinute;
     }
-    let validDuration = true;
 
     //Populate time list
     const times = [];
@@ -38,6 +40,11 @@
     let activityEnd = defaultHour + ":" + defaultMinute;
     let activityDuration = 0;
     let activityCategory = "";
+
+    //Data validation variables
+    let validDuration = true;
+    let validData = false;
+    $: validData = validDuration && activityName !== "" && activityCategory !== "";
 
     /* Cyclically reactive variables code from
     https://stackoverflow.com/questions/71622971/svelte-how-can-i-declare-two-cyclically-reactive-variables
@@ -68,61 +75,90 @@
         }
     }
 
+    //Button click functions
+    function saveActivity() {
+        let eventData = {
+            'name': activityName,
+            'time': activityStart,
+            'duration': activityDuration,
+            'category': activityCategory
+        };
+        dispatch('newEventCreated', eventData);
+    }
+
+    function cancelActivityCreation() {
+        activityName = '';
+        activityStart = defaultHour + ":" + defaultMinute;
+        activityDuration = 0;
+        activityCategory = '';
+        dispatch('cancelNewActivity');
+    }
+
 </script>
 <main>
-    <div class="form-control">
-        <label for="name-field">Activity Name:</label>
-        <input bind:value={activityName} id="name-field"/>
-    </div>
-    <div class="form-control">
-        <label for="from-field">Time:</label>
-        <div class="time-fields">
-            <select id="from-field" bind:value={activityStart}>
-                {#each times as time}
-                    <option value={time}>{toTwelveHourTime(time, true)}</option>
-                {/each}
-            </select>
-            <label for="to-field">to</label>
-            <select id="to-field" class={validDuration ? "" : "invalid-field"} bind:value={activityEnd}>
-                {#each times as time}
-                    <option value={time}>{toTwelveHourTime(time, true)}</option>
-                {/each}
-            </select>
+    <div class="activity-fields">
+        <div class="form-control">
+            <label for="name-field">Activity Name:</label>
+            <input bind:value={activityName} id="name-field"/>
         </div>
-        {#if !validDuration}
-            <label for="to-field" class="error-label">End time cannot be before start time</label>
-        {/if}
+        <div class="form-control">
+            <label for="from-field">Time:</label>
+            <div class="time-fields">
+                <select id="from-field" bind:value={activityStart}>
+                    {#each times as time}
+                        <option value={time}>{toTwelveHourTime(time, true)}</option>
+                    {/each}
+                </select>
+                <label for="to-field">to</label>
+                <select id="to-field" class={validDuration ? "" : "invalid-field"} bind:value={activityEnd}>
+                    {#each times as time}
+                        <option value={time}>{toTwelveHourTime(time, true)}</option>
+                    {/each}
+                </select>
+            </div>
+            {#if !validDuration}
+                <label for="to-field" class="error-label">End time cannot be before start time</label>
+            {/if}
+        </div>
+        <div class="form-control">
+            <label for="duration-field">Duration (minutes):</label>
+            <input id="duration-field" class={validDuration ? "" : "invalid-field"} type="number" bind:value={activityDuration} />
+            {#if !validDuration}
+                <label for="duration-field" class="error-label">End time cannot be before start time</label>
+            {/if}
+        </div>
+        <div id="category-controls" class="form-control">
+            <label for="category-field">Category:</label>
+            <select id="category-field" class="non-label" bind:value={activityCategory}>
+                {#each Object.entries(colorMappings) as [category, _]}
+                    <option value={category}>{category}</option>
+                {/each}
+            </select>
+            <svg width="20" height="20"  class="non-label">
+                <circle r="10" cx="10" cy="10" fill={colorMappings[activityCategory]} stroke="black" />
+            </svg>
+        </div>
     </div>
-    <div class="form-control">
-        <label for="duration-field">Duration (minutes):</label>
-        <input id="duration-field" class={validDuration ? "" : "invalid-field"} type="number" bind:value={activityDuration} />
-        {#if !validDuration}
-            <label for="duration-field" class="error-label">End time cannot be before start time</label>
-        {/if}
-    </div>
-    <div id="category-controls" class="form-control">
-        <label for="category-field">Category:</label>
-        <select id="category-field" class="non-label" bind:value={activityCategory}>
-            {#each Object.entries(colorMappings) as [category, _]}
-                <option value={category}>{category}</option>
-            {/each}
-        </select>
-        <svg width="20" height="20"  class="non-label">
-            <circle r="10" cx="10" cy="10" fill={colorMappings[activityCategory]} stroke="black" />
-        </svg>
+    <div class="finalization-buttons">
+        <button on:click={() => {saveActivity()}} disabled={!validData}>Create</button>
+        <button on:click={() => {cancelActivityCreation()}}>Cancel</button>
     </div>
 </main>
 <style>
     main {
         background-color: #D3D3D3;
-        display: flex;
         border: 1px solid black;
+        display: flex;
+        justify-content: space-between;
         margin: 0 2vw 2vh 2vw;
         padding: 1vh 1vw;
     }
     label {
         font-weight: bold;
         font-size: 0.9rem;
+    }
+    .activity-fields {
+        display: flex;
     }
     .form-control {
         margin: 2vw;
@@ -152,5 +188,13 @@
         font-size: 0.65rem;
         color: red;
         font-style: italic;
+    }
+    .finalization-buttons {
+        display: flex;
+        align-items: center;
+    }
+    .finalization-buttons button {
+        margin: auto 0.5vw;
+        background: #FFFDD0;
     }
 </style>

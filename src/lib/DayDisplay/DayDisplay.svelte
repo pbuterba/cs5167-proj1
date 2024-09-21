@@ -14,13 +14,19 @@
     let headerText = dateSlug === currDateSlug ? "Today's activities:" : "Edit activities for " + dateText;
 
     let showEventCreator = false;
+
+    function addNewEvent(event) {
+        dayActivities.push(event);
+        dayActivities = dayActivities;
+        showEventCreator = false;
+    }
 </script>
 
 <main>
     <h1>{headerText}</h1>
     <ActivityGrid activityList={dayActivities} showAddButton={!showEventCreator} on:newEvent={() => {showEventCreator = true;}} />
     {#if showEventCreator}
-        <ActivityCreator />
+        <ActivityCreator on:newEventCreated={(event) => {addNewEvent(event.detail);}} on:cancelNewActivity={() => {showEventCreator = false;}} />
     {/if}
 </main>
 
