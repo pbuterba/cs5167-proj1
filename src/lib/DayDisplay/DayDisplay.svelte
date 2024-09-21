@@ -3,28 +3,32 @@
     import ActivityCreator from './ActivityCreator.svelte';
     import {getDateSlug, getDateText} from '../utility-functions.js';
 
-    export let dayActivities;
-    export let date;
-
-    let dateSlug = getDateSlug(date);
-    let dateText = getDateText(date);
+    export let activityData;
     
-    let currDate = new Date();
-    let currDateSlug = getDateSlug(currDate);
-    let headerText = dateSlug === currDateSlug ? "Today's activities:" : "Edit activities for " + dateText;
+    let currTime = new Date();
+    $: currDate = getDateSlug(currTime);
+
+    let displayedTime = currTime;
+    $: displayedDate = getDateSlug(displayedTime);
+
+    $: displayedActivities = displayedDate in activityData ? activityData[displayedDate] : [];
+
+    let displayedDateText = getDateText(displayedTime);
+    
+    let headerText = displayedDate === currDate ? "Today's activities:" : "Edit activities for " + displayedDateText;
 
     let showEventCreator = false;
 
     function addNewEvent(event) {
-        dayActivities.push(event);
-        dayActivities = dayActivities;
+        displayedActivities.push(event);
+        displayedActivities = displayedActivities;
         showEventCreator = false;
     }
 </script>
 
 <main>
     <h1>{headerText}</h1>
-    <ActivityGrid activityList={dayActivities} showAddButton={!showEventCreator} on:newEvent={() => {showEventCreator = true;}} />
+    <ActivityGrid activityList={displayedActivities} showAddButton={!showEventCreator} on:newEvent={() => {showEventCreator = true;}} />
     {#if showEventCreator}
         <ActivityCreator on:newEventCreated={(event) => {addNewEvent(event.detail);}} on:cancelNewActivity={() => {showEventCreator = false;}} />
     {/if}
