@@ -21,7 +21,6 @@
 <style>
     main {
         background-color: white;
-        margin: 2vh 2vw 0 2vw;
         padding: 1vh 1vw;
         border: 1px solid black;
         min-height: 20vh;

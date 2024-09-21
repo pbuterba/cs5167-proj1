@@ -146,7 +146,6 @@
         border: 1px solid black;
         display: flex;
         justify-content: space-between;
-        margin: 0 2vw 2vh 2vw;
         padding: 1vh 1vw;
     }
     label {
