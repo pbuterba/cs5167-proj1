@@ -7,12 +7,23 @@
     let hour = date.getHours();
     let minute = date.getMinutes();
 
-    let defaultMinute = Math.floor(minute/15) * 15 < 10 ? "0" + Math.floor(minute/15) * 15 : Math.floor(minute/15) * 15;
+    //Get default start time
+    const timeIncrement = 5;
+    const defaultStepBack = 60;
+    let defaultHour;
+    let defaultMinute;
+    let totalMinutes = minute + hour * 60;
+    let defaultTotalMinutes = Math.floor((totalMinutes - defaultStepBack)/timeIncrement) * timeIncrement;
+    defaultHour = Math.floor(defaultTotalMinutes/60);
+    defaultMinute = defaultTotalMinutes - (Math.floor(defaultTotalMinutes/60) * 60);
+    if(defaultMinute < 10) {
+        defaultMinute = "0" + defaultMinute;
+    }
     let validDuration = true;
 
     //Populate time list
     const times = [];
-    for(let i = 0; i < 24 * 60; i += 15) {
+    for(let i = 0; i < 24 * 60; i += timeIncrement) {
         let hours = Math.floor(i/60);
         let minutes = i - (Math.floor(i/60) * 60);
         if(minutes < 10) {
@@ -23,8 +34,8 @@
 
     //Activity info variables
     let activityName = "";
-    let activityStart = hour - 1 + ":" + defaultMinute;
-    let activityEnd = hour - 1 + ":" + defaultMinute;
+    let activityStart = defaultHour + ":" + defaultMinute;
+    let activityEnd = defaultHour + ":" + defaultMinute;
     let activityDuration = 0;
     let activityCategory = "";
 
