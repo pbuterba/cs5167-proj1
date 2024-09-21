@@ -43,7 +43,6 @@
 
     //Data validation variables
     let validDuration = true;
-    let validData = false;
     $: validData = validDuration && activityName !== "" && activityCategory !== "";
 
     /* Cyclically reactive variables code from
@@ -68,11 +67,8 @@
     $: setDuration(subtractTimeFromTime(activityEnd, activityStart));
 
     function checkDurationBounds() {
-        if(activityDuration < 0) {
-            validDuration = false;
-        } else {
-            validDuration = true;
-        }
+        validDuration = activityDuration >= 0;
+        validData = validDuration && activityName !== "" && activityCategory !== "";
     }
 
     //Button click functions
