@@ -1,7 +1,8 @@
 <script>
     import {toTwelveHourTime, addMinutesToTime, subtractTimeFromTime} from "../utility-functions.js";
+    import {colorMappings} from '../../data/color-mappings.js';
 
-    export let date;
+    let date = new Date();
 
     let hour = date.getHours();
     let minute = date.getMinutes();
@@ -88,6 +89,17 @@
             <label for="duration-field" class="error-label">End time cannot be before start time</label>
         {/if}
     </div>
+    <div id="category-controls" class="form-control">
+        <label for="category-field">Category:</label>
+        <select id="category-field" class="non-label" bind:value={activityCategory}>
+            {#each Object.entries(colorMappings) as [category, _]}
+                <option value={category}>{category}</option>
+            {/each}
+        </select>
+        <svg width="20" height="20"  class="non-label">
+            <circle r="10" cx="10" cy="10" fill={colorMappings[activityCategory]} stroke="black" />
+        </svg>
+    </div>
 </main>
 <style>
     main {
@@ -107,8 +119,20 @@
     .form-control * {
         display: block;
     }
-    .time-fields  * {
+    #category-controls {
+        display: grid;
+        text-align: left;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 5fr 1fr;
+    }
+    .time-fields *, #category-controls * {
         display: inline;
+    }
+    #category-controls * {
+        margin: auto 0.25vw;
+    }
+    #category-controls .non-label {
+        grid-row: 2;
     }
     .invalid-field {
         border: 2px solid red;
