@@ -6,11 +6,13 @@
 
     let loggedActivities = activityData;
 
-    let currDate = getDateSlug(new Date());
+    let currTime = new Date();
+    $: currTime = new Date();
+    let currDate = getDateSlug(currTime);
     let currDayActivities = currDate in loggedActivities ? loggedActivities[currDate] : [];
 </script>
 
 <div class="header">
     <Header />
-    <DayDisplay date={new Date()} dayActivities={currDayActivities} />
+    <DayDisplay date={currTime} dayActivities={currDayActivities} />
 </div>

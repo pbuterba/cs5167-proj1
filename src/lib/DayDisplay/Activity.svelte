@@ -17,7 +17,7 @@
         margin: 0.5vh 0.5vw;
         display: flex;
         justify-content: space-between;
-        height: 50%;
+        height: 5vh;
     }
     main * {
         margin: auto 0.6vw;
