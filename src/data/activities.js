@@ -98,19 +98,19 @@ export const activityData = {
         {
             'name': 'Illustrator and Photoshop Class',
             'time': '9:30',
-            'duration': 110,
+            'duration': 80,
             'category': 'Class'
         },
         {
             'name': 'AI Principles Class',
             'time': '11:00',
-            'duration': 110,
+            'duration': 80,
             'category': 'Class'
         },
         {
             'name': 'Automata Class',
-            'time': '2:00',
-            'duration': 110,
+            'time': '14:00',
+            'duration': 80,
             'category': 'Class'
         },
         {
@@ -186,7 +186,7 @@ export const activityData = {
         {
             'name': 'AI Principles Class',
             'time': '11:00',
-            'duration': 110,
+            'duration': 80,
             'category': 'Class'
         },
         {
@@ -197,8 +197,8 @@ export const activityData = {
         },
         {
             'name': 'Automata Class',
-            'time': '2:00',
-            'duration': 110,
+            'time': '14:00',
+            'duration': 80,
             'category': 'Class'
         },
         {
@@ -223,7 +223,7 @@ export const activityData = {
         },
         {
             'name': 'Career Fair',
-            'time': '12:00',
+            'time': '114:00',
             'duration': 75,
             'category': 'Job Search'
         },
@@ -244,19 +244,19 @@ export const activityData = {
         {
             'name': 'Illustrator and Photoshop Class',
             'time': '9:30',
-            'duration': 110,
+            'duration': 80,
             'category': 'Class'
         },
         {
             'name': 'AI Principles Class',
             'time': '11:00',
-            'duration': 110,
+            'duration': 80,
             'category': 'Class'
         },
         {
             'name': 'Automata Class',
-            'time': '2:00',
-            'duration': 110,
+            'time': '14:00',
+            'duration': 80,
             'category': 'Class'
         },
         {
