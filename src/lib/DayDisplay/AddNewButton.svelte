@@ -6,11 +6,11 @@
 
     const dispatch = createEventDispatcher();
 
-    function addNewEvent() {
-        dispatch('newEvent');
+    function addNewActivity() {
+        dispatch('newActivity');
     }
 </script>
-<button on:click={addNewEvent}>
+<button on:click={addNewActivity}>
     <AddIcon width={size} />
     <p>Add new activity</p>
 </button>
@@ -21,7 +21,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 5vh;
+        height: 8vh;
         margin: 0.5vh 0.5vw;
     }
     button:hover {
