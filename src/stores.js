@@ -16,11 +16,19 @@ const start = new Date();
 export const elapsedTime = derived(
    time,
    ($time) => {
-      var minutes = Math.floor(($time - start) / (1000 * 60));
-      var seconds = Math.round(($time - start) / 1000) - minutes * 60;
+      var hours = Math.floor(($time - start) / (1000 * 3600));
+      var minutes = Math.floor(($time - start) / (1000 * 60)) - (hours * 60);
+      var seconds = Math.round(($time - start) / 1000) - (hours * 3600) - (minutes * 60);
+      var returnString = "";
+      if(hours > 0) {
+         returnString = returnString + hours + ":";
+         if(minutes < 10) {
+            minutes = "0" + minutes;
+         }
+      }
       if(seconds < 10) {
          seconds = "0" + seconds;
       }
-      return minutes + ":" + seconds;
+      return returnString + minutes + ":" + seconds;
    }
 );
