@@ -5,24 +5,46 @@
 
     export let activityData;
     
+    //Current and displayed date variables
     let currTime = new Date();
     $: currDate = getDateSlug(currTime);
 
     let displayedTime = currTime;
     $: displayedDate = getDateSlug(displayedTime);
-
     $: displayedActivities = displayedDate in activityData ? activityData[displayedDate] : [];
-    
     $: headerText = displayedDate === currDate ? "Today's activities:" : "Past activities:";
 
+    //Activity creator variables
+    let activityToEdit = {};
+    let activityToEditIndex = -1;
     let showEventCreator = false;
 
-    function addNewEvent(event) {
+    //Activity creator functions
+    function newActivity() {
+        activityToEdit = {};
+        showEventCreator = true;
+    }
+
+    function editActivity(activity) {
+        activityToEdit = activity;
+        activityToEditIndex = activityData[displayedDate].indexOf(activity);
+        showEventCreator = true;
+    }
+
+    function addNewActivity(activity) {
         if(displayedDate in activityData) {
-            activityData[displayedDate].push(event);
+            activityData[displayedDate].push(activity);
         } else {
-            activityData[displayedDate] = [event];
+            activityData[displayedDate] = [activity];
         }
+        activityData[displayedDate].sort((a, b) => {return parseInt(a.time.split(":")[0]) - parseInt(b.time.split(":")[0])});
+        activityData = activityData;
+        showEventCreator = false;
+    }
+
+    function updateActivity(activity) {
+        activityData[displayedDate][activityToEditIndex] = activity;
+        activityData[displayedDate].sort((a, b) => {return a.time.split(":")[0] - b.time.split(":")[0]});
         activityData = activityData;
         showEventCreator = false;
     }
@@ -96,9 +118,19 @@
             <button id="right-button" on:click={forwardOneDay} disabled={currDate === displayedDate}>&#x2BC8;</button>
         </div>
     </div>
-    <ActivityGrid activityList={displayedActivities} showAddButton={!showEventCreator} on:newEvent={() => {showEventCreator = true;}} />
+    <ActivityGrid
+        activityList={displayedActivities}
+        showAddButton={!showEventCreator}
+        on:newActivity={() => {newActivity(event.detail)}}
+        on:editActivity={(event) => {editActivity(event.detail)}}
+    />
     {#if showEventCreator}
-        <ActivityCreator on:newEventCreated={(event) => {addNewEvent(event.detail);}} on:cancelNewActivity={() => {showEventCreator = false;}} />
+        <ActivityCreator
+            activityData={activityToEdit}
+            on:newActivityCreated={(event) => {addNewActivity(event.detail);}}
+            on:activityUpdated={(event) => {updateActivity(event.detail);}}
+            on:cancelNewActivity={() => {showEventCreator = false;}}
+        />
     {/if}
 </main>
 

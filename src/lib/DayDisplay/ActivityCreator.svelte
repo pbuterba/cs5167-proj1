@@ -2,6 +2,10 @@
     import {createEventDispatcher} from 'svelte';
     import {toTwelveHourTime, addMinutesToTime, subtractTimeFromTime} from "../utility-functions.js";
     import {colorMappings} from '../../data/color-mappings.js';
+    import Activity from './Activity.svelte';
+
+    export let activityData;
+    let isNewActivity = activityData.name === undefined;
 
     const dispatch = createEventDispatcher();
 
@@ -35,11 +39,11 @@
     }
 
     //Activity info variables
-    let activityName = "";
-    let activityStart = defaultHour + ":" + defaultMinute;
-    let activityEnd = defaultHour + ":" + defaultMinute;
-    let activityDuration = 0;
-    let activityCategory = "";
+    let activityName = activityData.name !== undefined ? activityData.name : "";
+    let activityStart = activityData.time !== undefined ? activityData.time : defaultHour + ":" + defaultMinute;
+    let activityEnd = activityStart;
+    let activityDuration = activityData.duration !== undefined ? activityData.duration : 0;
+    let activityCategory = activityData.category !== undefined ? activityData.category : "";
 
     //Data validation variables
     let validDuration = true;
@@ -49,18 +53,22 @@
     https://stackoverflow.com/questions/71622971/svelte-how-can-i-declare-two-cyclically-reactive-variables
     */
     const setEnd = () => {
-        let endTime = addMinutesToTime(activityStart, activityDuration);
-        if(times.includes(endTime)) {
-            activityEnd = endTime;
-        } else if(parseInt(endTime.split(":")[0]) > 23) {
-            activityEnd = '23:45';
-            setDuration();
+        if(activityDuration !== undefined) {
+            let endTime = addMinutesToTime(activityStart, activityDuration);
+            if(times.includes(endTime)) {
+                activityEnd = endTime;
+            } else if(parseInt(endTime.split(":")[0]) > 23) {
+                activityEnd = '23:45';
+                setDuration();
+            }
+            checkDurationBounds();
         }
-        checkDurationBounds();
     }
     const setDuration = () => {
-        activityDuration = subtractTimeFromTime(activityEnd, activityStart);
-        checkDurationBounds();
+        if(activityEnd !== undefined) {
+            activityDuration = subtractTimeFromTime(activityEnd, activityStart);
+            checkDurationBounds();
+        }
     }
 
     $: setEnd(addMinutesToTime(activityStart, activityDuration));
@@ -72,14 +80,25 @@
     }
 
     //Button click functions
-    function saveActivity() {
-        let eventData = {
+    function newActivity() {
+        let exportData = {
             'name': activityName,
             'time': activityStart,
             'duration': activityDuration,
             'category': activityCategory
         };
-        dispatch('newEventCreated', eventData);
+        dispatch('newActivityCreated', exportData);
+    }
+
+    
+    function saveActivity() {
+        let exportData = {
+            'name': activityName,
+            'time': activityStart,
+            'duration': activityDuration,
+            'category': activityCategory
+        };
+        dispatch('activityUpdated', exportData);
     }
 
     function cancelActivityCreation() {
@@ -136,7 +155,11 @@
         </div>
     </div>
     <div class="finalization-buttons">
-        <button on:click={() => {saveActivity()}} disabled={!validData}>Create</button>
+        {#if isNewActivity}
+            <button on:click={() => {newActivity()}} disabled={!validData}>Create</button>
+        {:else}
+            <button on:click={() => {saveActivity()}} disabled={!validData}>Save</button>
+        {/if}
         <button on:click={() => {cancelActivityCreation()}}>Cancel</button>
     </div>
 </main>

@@ -1,21 +1,18 @@
 <script>
-    import {createEventDispatcher} from 'svelte';
     import Activity from './Activity.svelte';
     import AddNewButton from './AddNewButton.svelte';
 
     export let activityList;
     export let showAddButton;
-
-    const dispatch = createEventDispatcher();
 </script>
     <main>
         {#key activityList}
             {#each activityList as activity}
-                <Activity activityData={activity} />
+                <Activity activityData={activity} on:editActivity />
             {/each}
         {/key}
         {#if showAddButton}
-            <AddNewButton size={40} on:newEvent />
+            <AddNewButton size={40} on:newActivity />
         {/if}
     </main>
 <style>
