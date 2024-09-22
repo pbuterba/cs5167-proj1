@@ -8,7 +8,7 @@
     <main>
         {#key activityList}
             {#each activityList as activity}
-                <Activity activityData={activity} on:editActivity />
+                <Activity activityData={activity} on:editActivity on:deleteActivity />
             {/each}
         {/key}
         {#if showAddButton}

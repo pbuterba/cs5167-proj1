@@ -33,7 +33,7 @@
         dispatch('editActivity', activityData);
     }
     function deleteActivity() {
-
+        dispatch('deleteActivity', activityData);
     }
 </script>
 

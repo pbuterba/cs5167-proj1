@@ -49,6 +49,18 @@
         showEventCreator = false;
     }
 
+    function deleteActivity(activity) {
+        for(let i = 0; i < activityData[displayedDate].length; i++) {
+            if(JSON.stringify(activityData[displayedDate][i]) === JSON.stringify(activity)) {
+                if(confirm('Delete ' + activity.name + "?")) {
+                    activityData[displayedDate].splice(i, 1);
+                }
+                break;
+            }
+        }
+        activityData = activityData;
+    }
+
     //Scroll button functions
     function backOneDay() {
         //Get current day in components
@@ -118,12 +130,15 @@
             <button id="right-button" on:click={forwardOneDay} disabled={currDate === displayedDate}>&#x2BC8;</button>
         </div>
     </div>
-    <ActivityGrid
-        activityList={displayedActivities}
-        showAddButton={!showEventCreator}
-        on:newActivity={() => {newActivity(event.detail)}}
-        on:editActivity={(event) => {editActivity(event.detail)}}
-    />
+    {#key displayedActivities}
+        <ActivityGrid
+            activityList={displayedActivities}
+            showAddButton={!showEventCreator}
+            on:newActivity={() => {newActivity(event.detail);}}
+            on:editActivity={(event) => {editActivity(event.detail);}}
+            on:deleteActivity={(event) => {deleteActivity(event.detail);}}
+        />
+    {/key}
     {#if showEventCreator}
         <ActivityCreator
             activityData={activityToEdit}
