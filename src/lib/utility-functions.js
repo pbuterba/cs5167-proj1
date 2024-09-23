@@ -53,6 +53,14 @@ export function getDateSlug(dateVal) {
     return monthText + "-" + dayText + "-" + dateVal.getFullYear();
 }
 
+export function dateFromSlug(dateSlug) {
+    let components = dateSlug.split("-");
+    let month = parseInt(components[0]) - 1;
+    let day = parseInt(components[1]);
+    let year = parseInt(components[2]);
+    return new Date(year, month, day);
+}
+
 export function getDateText(dateVal) {
     let dayOfWeekText = DAYS_OF_WEEK[dateVal.getDay()];
     let monthText = MONTHS[dateVal.getMonth()];
