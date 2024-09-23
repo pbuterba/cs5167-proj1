@@ -119,3 +119,15 @@ export function subtractTimeFromTime(subtractFromTime, subtractTime) {
     
     return subtractFromTimeMinutes - subtractTimeMinutes;
 }
+
+export function getPreviousDate(date) {
+    let dateObj = dateFromSlug(date);
+    dateObj.setTime(dateObj.getTime() - 24*60*60*1000);
+    return getDateSlug(dateObj);
+}
+
+export function getNextDate(date) {
+    let dateObj = dateFromSlug(date);
+    dateObj.setTime(dateObj.getTime() + 24*60*60*1000);
+    return getDateSlug(dateObj);
+}

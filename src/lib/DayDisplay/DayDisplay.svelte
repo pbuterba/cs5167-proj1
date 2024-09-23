@@ -1,7 +1,7 @@
 <script>
     import ActivityGrid from './ActivityGrid.svelte';
     import ActivityCreator from './ActivityCreator.svelte';
-    import {getDateSlug, dateFromSlug, getDateText} from '../utility-functions.js';
+    import {getDateSlug, dateFromSlug, getDateText, getPreviousDate, getNextDate} from '../utility-functions.js';
     import {selectedDate, storedActivities} from '../../stores.js';
 
     //Get activities
@@ -79,70 +79,11 @@
     //Scroll button functions
     function backOneDay() {
         showEventCreator = false;
-
-        //Get current day in components
-        let displayedDateComponents = displayedDate.split('-');
-        let displayedMonth = parseInt(displayedDateComponents[0]);
-        let displayedDay = parseInt(displayedDateComponents[1]);
-        let displayedYear = parseInt(displayedDateComponents[2]);
-
-        //Decrement day
-        if(displayedMonth === 1 && displayedDay === 1) {
-            displayedYear -= 1;
-            displayedMonth = 12;
-            displayedDay = 31;
-        } else if(displayedDay === 1) {
-            displayedMonth -= 1;
-            if(displayedMonth === 4 || displayedMonth === 6 || displayedMonth === 9 || displayedMonth === 11) {
-                displayedDay = 30;
-            } else if(displayedMonth === 2 && displayedYear % 4 === 0 && (displayedYear % 100 !== 0 || displayedYear % 400 === 0)) {
-                displayedDay = 29;
-            } else if(displayedMonth === 2) {
-                displayedDay = 28;
-            } else {
-                displayedDay = 31;
-            }
-        } else {
-            displayedDay -= 1;
-        }
-
-        //Update displayed day
-        displayedMonth = displayedMonth < 10 ? "0" + displayedMonth : displayedMonth.toString();
-        displayedDay = displayedDay < 10 ? "0" + displayedDay : displayedDay.toString();
-        displayedYear = displayedYear.toString();
-        selectedDate.set(displayedMonth + "-" + displayedDay + "-" + displayedYear);
+        selectedDate.set(getPreviousDate(displayedDate));
     }
     function forwardOneDay() {
         showEventCreator = false;
-
-        //Get current day in components
-        let displayedDateComponents = displayedDate.split('-');
-        let displayedMonth = parseInt(displayedDateComponents[0]);
-        let displayedDay = parseInt(displayedDateComponents[1]);
-        let displayedYear = parseInt(displayedDateComponents[2]);
-
-        //Increment day
-        if(displayedMonth === 12 && displayedDay === 31) {
-            displayedYear += 1;
-            displayedMonth = 1;
-            displayedDay = 1;
-        } else if(
-            (displayedDay === 30 && (displayedMonth === 4 || displayedMonth === 6 || displayedMonth === 9 || displayedMonth === 11))
-            || (displayedDay === 29 && displayedMonth === 2 && displayedYear % 4 === 0 && (displayedYear % 100 !== 0 || displayedYear % 400 === 0))
-            || (displayedDay === 28 && displayedMonth === 2 && (displayedYear % 4 !== 0 || (displayedYear % 100 === 0 && displayedYear % 400 !== 0)))
-            || (displayedDay === 31)
-        ) {
-            displayedMonth += 1;
-            displayedDay = 1;
-        } else {
-            displayedDay += 1;
-        }
-
-        //Update displayed day
-        displayedMonth = displayedMonth < 10 ? "0" + displayedMonth : displayedMonth.toString();
-        displayedDay = displayedDay < 10 ? "0" + displayedDay : displayedDay.toString();
-        displayedYear = displayedYear.toString();
-        selectedDate.set(displayedMonth + "-" + displayedDay + "-" + displayedYear);
+        selectedDate.set(getNextDate(displayedDate));
     }
 </script>
 
