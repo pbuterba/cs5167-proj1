@@ -131,3 +131,68 @@ export function getNextDate(date) {
     dateObj.setTime(dateObj.getTime() + 24*60*60*1000);
     return getDateSlug(dateObj);
 }
+
+export function hourAndMinuteDisplay(minutes) {
+    let hours = Math.floor(minutes/60);
+    minutes = minutes - hours * 60;
+    return hours > 0 ? hours + "h " + minutes + "m" : minutes + "m";
+}
+
+export function expandedHourAndMinuteDisplay(minutes) {
+    let hours = Math.floor(minutes/60);
+    minutes = minutes - hours * 60;
+    if(hours > 0 && minutes > 0) {
+        return hours + " hours and " + minutes + " minutes";
+    } else if(hours > 0) {
+        return hours + " hours";
+    }
+    return minutes + " minutes";
+}
+
+export function getWeekStart(date) {
+    let dateObj = dateFromSlug(date);
+    let dayOfWeek = dateObj.getDay();
+    let millisecondsToSubtract = dayOfWeek*24*60*60*1000;
+    dateObj.setTime(dateObj.getTime() - millisecondsToSubtract);
+    return getDateSlug(dateObj);
+}
+
+export function getWeekEnd(date) {
+    let dateObj = dateFromSlug(date);
+    let dayOfWeek = dateObj.getDay();
+    let millisecondsToAdd = (6 - dayOfWeek)*24*60*60*1000;
+    dateObj.setTime(dateObj.getTime() + millisecondsToAdd);
+    return getDateSlug(dateObj);
+}
+
+export function getMonthStart(date) {
+    return date.split("-")[0] + "-01-" + date.split("-")[2];
+}
+
+export function getMonthEnd(date) {
+    if(date.split("-")[0] === "12") {
+        return getYearEnd(date);
+    } else {
+        return getPreviousDate((parseInt(date.split("-")[0]) + 1) + "-01-" + date.split("-")[2]);
+    }
+}
+
+export function getYearStart(date) {
+    return "01-01-" + date.split("-")[2];
+}
+
+export function getYearEnd(date) {
+    return "12-31-" + date.split("-")[2];
+}
+
+export function getGoalPeriod(goalType, date) {
+    if(goalType === "day") {
+        return date;
+    } else if(goalType === "week") {
+        return getWeekStart(date);
+    } else if(goalType === "month") {
+        return getMonthStart(date);
+    } else {
+        return getYearStart(date);
+    }
+}
