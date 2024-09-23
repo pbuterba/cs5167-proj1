@@ -1,13 +1,12 @@
 <script>
     import Header from './lib/Header.svelte';
     import DayDisplay from './lib/DayDisplay/DayDisplay.svelte';
-    import {getDateSlug} from './lib/utility-functions.js';
-    import {activityData} from './data/activities.js';
-
-    let loggedActivities = activityData;
+    import CategoryOverview from './lib/CategoryOverview.svelte';
+    import {categories} from './data/categories.js';
 </script>
 
-<div class="header">
+<main class="header">
     <Header />
-    <DayDisplay activityData={loggedActivities} />
-</div>
+    <DayDisplay />
+    <CategoryOverview categories={categories} />
+</main>

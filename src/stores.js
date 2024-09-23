@@ -1,4 +1,6 @@
-import { readable, derived } from 'svelte/store';
+import {readable, writable, derived} from 'svelte/store';
+import {getDateSlug} from './lib/utility-functions.js';
+import {activityData} from './data/activities.js';
 
 //Time store code sourced from learn.svelte.dev tutorial: https://learn.svelte.dev/tutorial/readable-stores
 export const time = readable(new Date(), function start(set) {
@@ -32,3 +34,7 @@ export const elapsedTime = derived(
       return returnString + minutes + ":" + seconds;
    }
 );
+
+export const selectedDate = writable(getDateSlug(new Date()));
+
+export const storedActivities = writable(activityData);

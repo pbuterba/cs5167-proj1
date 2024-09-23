@@ -1,16 +1,24 @@
 <script>
     import ActivityGrid from './ActivityGrid.svelte';
     import ActivityCreator from './ActivityCreator.svelte';
-    import {getDateSlug, getDateText} from '../utility-functions.js';
+    import {getDateSlug, dateFromSlug, getDateText} from '../utility-functions.js';
+    import {selectedDate, storedActivities} from '../../stores.js';
 
-    export let activityData;
+    //Get activities
+    let activityData;
+    storedActivities.subscribe((data) => {
+        activityData = data;
+    });
     
     //Current and displayed date variables
     let currTime = new Date();
     $: currDate = getDateSlug(currTime);
+    let displayedDate;
+    selectedDate.subscribe((date) => {
+        displayedDate = date;
+    });
 
-    let displayedTime = currTime;
-    $: displayedDate = getDateSlug(displayedTime);
+    $: displayedTime = dateFromSlug(displayedDate);
     $: displayedActivities = displayedDate in activityData ? activityData[displayedDate] : [];
     $: headerText = displayedDate === currDate ? "Today's activities:" : "Past activities:";
 
@@ -32,20 +40,24 @@
     }
 
     function addNewActivity(activity) {
-        if(displayedDate in activityData) {
-            activityData[displayedDate].push(activity);
-        } else {
-            activityData[displayedDate] = [activity];
-        }
-        activityData[displayedDate].sort((a, b) => {return parseInt(a.time.split(":")[0]) - parseInt(b.time.split(":")[0])});
-        activityData = activityData;
+        storedActivities.update((data) => {
+            if(displayedDate in data) {
+                data[displayedDate].push(activity);
+            } else {
+                data[displayedDate] = [activity];
+            }
+            data[displayedDate].sort((a, b) => {return parseInt(a.time.split(":")[0]) - parseInt(b.time.split(":")[0])});
+            return data;
+        });
         showEventCreator = false;
     }
 
     function updateActivity(activity) {
-        activityData[displayedDate][activityToEditIndex] = activity;
-        activityData[displayedDate].sort((a, b) => {return a.time.split(":")[0] - b.time.split(":")[0]});
-        activityData = activityData;
+        storedActivities.update((data) => {
+            data[displayedDate][activityToEditIndex] = activity;
+            data[displayedDate].sort((a, b) => {return a.time.split(":")[0] - b.time.split(":")[0]});
+            return data;
+        });
         showEventCreator = false;
     }
 
@@ -53,7 +65,10 @@
         for(let i = 0; i < activityData[displayedDate].length; i++) {
             if(JSON.stringify(activityData[displayedDate][i]) === JSON.stringify(activity)) {
                 if(confirm('Delete ' + activity.name + "?")) {
-                    activityData[displayedDate].splice(i, 1);
+                    storedActivities.update((data) => {
+                        data[displayedDate].splice(i, 1);
+                        return data;
+                    });
                 }
                 break;
             }
@@ -63,6 +78,8 @@
 
     //Scroll button functions
     function backOneDay() {
+        showEventCreator = false;
+
         //Get current day in components
         let displayedDateComponents = displayedDate.split('-');
         let displayedMonth = parseInt(displayedDateComponents[0]);
@@ -89,10 +106,15 @@
             displayedDay -= 1;
         }
 
-        //Update displayed time
-        displayedTime = new Date(displayedYear, displayedMonth - 1, displayedDay);
+        //Update displayed day
+        displayedMonth = displayedMonth < 10 ? "0" + displayedMonth : displayedMonth.toString();
+        displayedDay = displayedDay < 10 ? "0" + displayedDay : displayedDay.toString();
+        displayedYear = displayedYear.toString();
+        selectedDate.set(displayedMonth + "-" + displayedDay + "-" + displayedYear);
     }
     function forwardOneDay() {
+        showEventCreator = false;
+
         //Get current day in components
         let displayedDateComponents = displayedDate.split('-');
         let displayedMonth = parseInt(displayedDateComponents[0]);
@@ -116,8 +138,11 @@
             displayedDay += 1;
         }
 
-        //Update displayed time
-        displayedTime = new Date(displayedYear, displayedMonth - 1, displayedDay);
+        //Update displayed day
+        displayedMonth = displayedMonth < 10 ? "0" + displayedMonth : displayedMonth.toString();
+        displayedDay = displayedDay < 10 ? "0" + displayedDay : displayedDay.toString();
+        displayedYear = displayedYear.toString();
+        selectedDate.set(displayedMonth + "-" + displayedDay + "-" + displayedYear);
     }
 </script>
 
