@@ -1,6 +1,19 @@
 <script>
-    import {selectedDate, storedActivities} from '../stores.js';
-    import {getDateSlug, dateFromSlug, getPreviousDate, getNextDate} from './utility-functions.js';
+    import GoalList from './GoalList.svelte';
+    import {selectedDate, storedActivities, storedGoals} from '../../stores.js';
+    import {
+        getDateSlug,
+        dateFromSlug,
+        getPreviousDate,
+        getNextDate,
+        hourAndMinuteDisplay,
+        getWeekStart,
+        getWeekEnd,
+        getMonthStart,
+        getMonthEnd,
+        getYearStart,
+        getYearEnd
+    } from '../utility-functions.js';
 
     export let categories;
 
@@ -46,48 +59,6 @@
     let categoryTimes = calculateCategoryTimes(activitySubset);
     $: categoryTimes = calculateCategoryTimes(activitySubset);
 
-    function hourAndMinuteDisplay(minutes) {
-        let hours = Math.floor(minutes/60);
-        minutes = minutes - hours * 60;
-        return hours > 0 ? hours + "h " + minutes + "m" : minutes + "m";
-    }
-
-    function getWeekStart(date) {
-        let dateObj = dateFromSlug(date);
-        let dayOfWeek = dateObj.getDay();
-        let millisecondsToSubtract = dayOfWeek*24*60*60*1000;
-        dateObj.setTime(dateObj.getTime() - millisecondsToSubtract);
-        return getDateSlug(dateObj);
-    }
-
-    function getWeekEnd(date) {
-        let dateObj = dateFromSlug(date);
-        let dayOfWeek = dateObj.getDay();
-        let millisecondsToAdd = (6 - dayOfWeek)*24*60*60*1000;
-        dateObj.setTime(dateObj.getTime() + millisecondsToAdd);
-        return getDateSlug(dateObj);
-    }
-
-    function getMonthStart(date) {
-        return date.split("-")[0] + "-01-" + date.split("-")[2];
-    }
-
-    function getMonthEnd(date) {
-        if(date.split("-")[0] === "12") {
-            return getYearEnd(date);
-        } else {
-            return getPreviousDate((parseInt(date.split("-")[0]) + 1) + "-01-" + date.split("-")[2]);
-        }
-    }
-
-    function getYearStart(date) {
-        return "01-01-" + date.split("-")[2];
-    }
-
-    function getYearEnd(date) {
-        return "12-31-" + date.split("-")[2];
-    }
-
     function boundedSubset(date, end) {
         let subset = [];
         while(date !== currDate && date !== end) {
@@ -114,12 +85,11 @@
         }
         return times;
     }
-
 </script>
 <main>
     <div id="top-bar">
         <h1 style="grid-column: 2">Total time by category:</h1>
-        <select bind:value={timePeriod}>
+        <select id="time-period-selector" bind:value={timePeriod}>
             <option value="day">Day</option>
             <option value="week">Week</option>
             <option value="month">Month</option>
@@ -137,11 +107,16 @@
             </div>
         {/each}
     </div>
+    <GoalList timePeriod={timePeriod} times={categoryTimes} />
 </main>
 <style>
     main {
         background: #94E1E3;
         border: 2px solid black;
+        padding: 1vw 1vh;
+    }
+    main * {
+        margin: auto;
     }
     #top-bar {
         display: grid;
@@ -154,13 +129,12 @@
         border-radius: 20px;
         padding: 0.5vh 1vw;
         width: 25%;
-        height: 75%;
         margin: auto 2vw auto auto;
     }
     #category-display {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
-        width: 60%;
+        width: 70%;
         margin: auto;
     }
     .category-listing {
