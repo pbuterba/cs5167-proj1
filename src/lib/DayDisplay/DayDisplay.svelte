@@ -100,7 +100,7 @@
         <ActivityGrid
             activityList={displayedActivities}
             showAddButton={!showEventCreator}
-            on:newActivity={() => {newActivity(event.detail);}}
+            on:newActivity={() => {newActivity();}}
             on:editActivity={(event) => {editActivity(event.detail);}}
             on:deleteActivity={(event) => {deleteActivity(event.detail);}}
         />

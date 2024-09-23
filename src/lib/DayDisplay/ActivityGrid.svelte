@@ -5,16 +5,16 @@
     export let activityList;
     export let showAddButton;
 </script>
-    <main>
-        {#key activityList}
-            {#each activityList as activity}
-                <Activity activityData={activity} on:editActivity on:deleteActivity />
-            {/each}
-        {/key}
-        {#if showAddButton}
-            <AddNewButton size={40} on:newActivity />
-        {/if}
-    </main>
+<main>
+    {#key activityList}
+        {#each activityList as activity}
+            <Activity activityData={activity} on:editActivity on:deleteActivity />
+        {/each}
+    {/key}
+    {#if showAddButton}
+        <AddNewButton size={40} on:newActivity />
+    {/if}
+</main>
 <style>
     main {
         background-color: white;
