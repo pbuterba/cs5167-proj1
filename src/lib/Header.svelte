@@ -1,6 +1,9 @@
 <script>
+    import {createEventDispatcher} from 'svelte';
     import { time, elapsedTime } from '../stores.js';
     let userName = 'Preston Buterbaugh';
+
+    const dispatch = createEventDispatcher();
 
     const dateFormat = new Intl.DateTimeFormat(
         'en',
@@ -17,7 +20,12 @@
 </script>
 
 <main>
-    <h1>Hello, {userName}!</h1>
+    <div id="top-row">
+        <h1>Hello, {userName}!</h1>
+        <div id="header-buttons">
+            <button id="settings-button" on:click={() => {dispatch('openSettings');}}>Settings</button>
+        </div>
+    </div>
     <h2>Today is: <span class="current-day">{dateFormat.format($time)}</span></h2>
     <div id="bottom-row">
         <p>
@@ -37,12 +45,28 @@
         padding: 1vh 1vw;
         font-family: serif;
     }
+    #top-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
     h1, h2 {
         font-family: cursive;
     }
     h1 {
-        margin-top: 0;
+        margin: 0;
+        grid-column: 2;
         font-size: 2.5rem;
+    }
+    #header-buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    #settings-button {
+        background: #FFFDD0;
+        font-family: sans-serif;
+        width: 10vw;
+        border-radius: 30px;
     }
     h2 {
         font-size: 1.5rem;
