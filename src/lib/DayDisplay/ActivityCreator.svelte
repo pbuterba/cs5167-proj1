@@ -1,7 +1,7 @@
 <script>
     import {createEventDispatcher} from 'svelte';
     import {toTwelveHourTime, addMinutesToTime, subtractTimeFromTime} from "../utility-functions.js";
-    import {colorMappings} from '../../data/color-mappings.js';
+    import {categories} from '../../data/categories.js';
     import Activity from './Activity.svelte';
 
     export let activityData;
@@ -44,6 +44,9 @@
     let activityEnd = activityStart;
     let activityDuration = activityData.duration !== undefined ? activityData.duration : 0;
     let activityCategory = activityData.category !== undefined ? activityData.category : "";
+
+    //Color
+    $: selectedColor = activityCategory === "" ? "#FFFFFF" : categories[activityCategory];
 
     //Data validation variables
     let validDuration = true;
@@ -145,12 +148,13 @@
         <div id="category-controls" class="form-control">
             <label for="category-field">Category:</label>
             <select id="category-field" class="non-label" bind:value={activityCategory}>
-                {#each Object.entries(colorMappings) as [category, _]}
+                <option value=""></option>
+                {#each Object.entries(categories) as [category, _]}
                     <option value={category}>{category}</option>
                 {/each}
             </select>
             <svg width="20" height="20"  class="non-label">
-                <circle r="10" cx="10" cy="10" fill={colorMappings[activityCategory]} stroke="black" />
+                <circle r="10" cx="10" cy="10" fill={selectedColor} stroke="black" />
             </svg>
         </div>
     </div>
@@ -165,7 +169,7 @@
 </main>
 <style>
     main {
-        background-color: #D3D3D3;
+        background-color: #E3CE68;
         border: 1px solid black;
         display: flex;
         justify-content: space-between;

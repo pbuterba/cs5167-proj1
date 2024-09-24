@@ -1,16 +1,24 @@
 <script>
     import ActivityGrid from './ActivityGrid.svelte';
     import ActivityCreator from './ActivityCreator.svelte';
-    import {getDateSlug, getDateText} from '../utility-functions.js';
+    import {getDateSlug, dateFromSlug, getDateText, getPreviousDate, getNextDate} from '../utility-functions.js';
+    import {selectedDate, storedActivities} from '../../stores.js';
 
-    export let activityData;
+    //Get activities
+    let activityData;
+    storedActivities.subscribe((data) => {
+        activityData = data;
+    });
     
     //Current and displayed date variables
     let currTime = new Date();
     $: currDate = getDateSlug(currTime);
+    let displayedDate;
+    selectedDate.subscribe((date) => {
+        displayedDate = date;
+    });
 
-    let displayedTime = currTime;
-    $: displayedDate = getDateSlug(displayedTime);
+    $: displayedTime = dateFromSlug(displayedDate);
     $: displayedActivities = displayedDate in activityData ? activityData[displayedDate] : [];
     $: headerText = displayedDate === currDate ? "Today's activities:" : "Past activities:";
 
@@ -32,20 +40,24 @@
     }
 
     function addNewActivity(activity) {
-        if(displayedDate in activityData) {
-            activityData[displayedDate].push(activity);
-        } else {
-            activityData[displayedDate] = [activity];
-        }
-        activityData[displayedDate].sort((a, b) => {return parseInt(a.time.split(":")[0]) - parseInt(b.time.split(":")[0])});
-        activityData = activityData;
+        storedActivities.update((data) => {
+            if(displayedDate in data) {
+                data[displayedDate].push(activity);
+            } else {
+                data[displayedDate] = [activity];
+            }
+            data[displayedDate].sort((a, b) => {return parseInt(a.time.split(":")[0]) - parseInt(b.time.split(":")[0])});
+            return data;
+        });
         showEventCreator = false;
     }
 
     function updateActivity(activity) {
-        activityData[displayedDate][activityToEditIndex] = activity;
-        activityData[displayedDate].sort((a, b) => {return a.time.split(":")[0] - b.time.split(":")[0]});
-        activityData = activityData;
+        storedActivities.update((data) => {
+            data[displayedDate][activityToEditIndex] = activity;
+            data[displayedDate].sort((a, b) => {return a.time.split(":")[0] - b.time.split(":")[0]});
+            return data;
+        });
         showEventCreator = false;
     }
 
@@ -53,7 +65,10 @@
         for(let i = 0; i < activityData[displayedDate].length; i++) {
             if(JSON.stringify(activityData[displayedDate][i]) === JSON.stringify(activity)) {
                 if(confirm('Delete ' + activity.name + "?")) {
-                    activityData[displayedDate].splice(i, 1);
+                    storedActivities.update((data) => {
+                        data[displayedDate].splice(i, 1);
+                        return data;
+                    });
                 }
                 break;
             }
@@ -63,61 +78,12 @@
 
     //Scroll button functions
     function backOneDay() {
-        //Get current day in components
-        let displayedDateComponents = displayedDate.split('-');
-        let displayedMonth = parseInt(displayedDateComponents[0]);
-        let displayedDay = parseInt(displayedDateComponents[1]);
-        let displayedYear = parseInt(displayedDateComponents[2]);
-
-        //Decrement day
-        if(displayedMonth === 1 && displayedDay === 1) {
-            displayedYear -= 1;
-            displayedMonth = 12;
-            displayedDay = 31;
-        } else if(displayedDay === 1) {
-            displayedMonth -= 1;
-            if(displayedMonth === 4 || displayedMonth === 6 || displayedMonth === 9 || displayedMonth === 11) {
-                displayedDay = 30;
-            } else if(displayedMonth === 2 && displayedYear % 4 === 0 && (displayedYear % 100 !== 0 || displayedYear % 400 === 0)) {
-                displayedDay = 29;
-            } else if(displayedMonth === 2) {
-                displayedDay = 28;
-            } else {
-                displayedDay = 31;
-            }
-        } else {
-            displayedDay -= 1;
-        }
-
-        //Update displayed time
-        displayedTime = new Date(displayedYear, displayedMonth - 1, displayedDay);
+        showEventCreator = false;
+        selectedDate.set(getPreviousDate(displayedDate));
     }
     function forwardOneDay() {
-        //Get current day in components
-        let displayedDateComponents = displayedDate.split('-');
-        let displayedMonth = parseInt(displayedDateComponents[0]);
-        let displayedDay = parseInt(displayedDateComponents[1]);
-        let displayedYear = parseInt(displayedDateComponents[2]);
-
-        //Increment day
-        if(displayedMonth === 12 && displayedDay === 31) {
-            displayedYear += 1;
-            displayedMonth = 1;
-            displayedDay = 1;
-        } else if(
-            (displayedDay === 30 && (displayedMonth === 4 || displayedMonth === 6 || displayedMonth === 9 || displayedMonth === 11))
-            || (displayedDay === 29 && displayedMonth === 2 && displayedYear % 4 === 0 && (displayedYear % 100 !== 0 || displayedYear % 400 === 0))
-            || (displayedDay === 28 && displayedMonth === 2 && (displayedYear % 4 !== 0 || (displayedYear % 100 === 0 && displayedYear % 400 !== 0)))
-            || (displayedDay === 31)
-        ) {
-            displayedMonth += 1;
-            displayedDay = 1;
-        } else {
-            displayedDay += 1;
-        }
-
-        //Update displayed time
-        displayedTime = new Date(displayedYear, displayedMonth - 1, displayedDay);
+        showEventCreator = false;
+        selectedDate.set(getNextDate(displayedDate));
     }
 </script>
 
@@ -134,7 +100,7 @@
         <ActivityGrid
             activityList={displayedActivities}
             showAddButton={!showEventCreator}
-            on:newActivity={() => {newActivity(event.detail);}}
+            on:newActivity={() => {newActivity();}}
             on:editActivity={(event) => {editActivity(event.detail);}}
             on:deleteActivity={(event) => {deleteActivity(event.detail);}}
         />

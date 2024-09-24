@@ -1,7 +1,7 @@
 <script>
     import {createEventDispatcher} from 'svelte';
     import {toTwelveHourTime} from '../utility-functions.js'
-    import {colorMappings} from '../../data/color-mappings.js';
+    import {categories} from '../../data/categories.js';
 
     export let activityData;
 
@@ -10,7 +10,7 @@
     let focused = false;
 
     //Determine colors
-    let color = colorMappings[activityData.category];
+    let color = categories[activityData.category];
     let channelSum = 0;
     for(let i = 1; i <= 5; i += 2) {
         let channel = parseInt(color.substring(i, i + 2), 16);
