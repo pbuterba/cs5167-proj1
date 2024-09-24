@@ -1,7 +1,6 @@
 <script>
     import {createEventDispatcher} from 'svelte';
-    import {categories} from '../../data/categories.js';
-    import {selectedDate} from '../../stores.js';
+    import {selectedDate, storedCategories} from '../../stores.js';
     import {getWeekStart, getMonthStart, getYearStart, getGoalPeriod} from '../utility-functions.js';
 
     export let goalData;
@@ -14,6 +13,12 @@
     selectedDate.subscribe((date) => {
         displayedDate = date;
     });
+
+    //Get categories
+    let categories;
+    storedCategories.subscribe((data) => {
+        categories = data;
+    })
 
     //Goal info variables
     let goalCategory = goalData.category !== undefined ? goalData.category : "";

@@ -1,13 +1,19 @@
 <script>
     import {createEventDispatcher} from 'svelte';
-    import {toTwelveHourTime, addMinutesToTime, subtractTimeFromTime} from "../utility-functions.js";
-    import {categories} from '../../data/categories.js';
     import Activity from './Activity.svelte';
+    import {toTwelveHourTime, addMinutesToTime, subtractTimeFromTime} from "../utility-functions.js";
+    import {storedCategories} from '../../stores.js';
 
     export let activityData;
     let isNewActivity = activityData.name === undefined;
 
     const dispatch = createEventDispatcher();
+
+    //Get categories
+    let categories;
+    storedCategories.subscribe((data) => {
+        categories = data;
+    })
 
     let date = new Date();
 

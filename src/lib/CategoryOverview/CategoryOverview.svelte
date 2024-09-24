@@ -1,6 +1,6 @@
 <script>
     import GoalList from './GoalList.svelte';
-    import {selectedDate, storedActivities, storedGoals} from '../../stores.js';
+    import {selectedDate, storedActivities, storedCategories, storedGoals} from '../../stores.js';
     import {
         getDateSlug,
         dateFromSlug,
@@ -15,12 +15,16 @@
         getYearEnd
     } from '../utility-functions.js';
 
-    export let categories;
-
     //Get activities
     let activities;
     storedActivities.subscribe((data) => {
         activities = data;
+    });
+
+    //Get categories
+    let categories;
+    storedCategories.subscribe((data) => {
+        categories = data;
     });
 
     //Current and displayed date

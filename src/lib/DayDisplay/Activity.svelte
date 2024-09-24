@@ -1,13 +1,19 @@
 <script>
     import {createEventDispatcher} from 'svelte';
     import {toTwelveHourTime} from '../utility-functions.js'
-    import {categories} from '../../data/categories.js';
+    import {storedCategories} from '../../stores.js';
 
     export let activityData;
 
     const dispatch = createEventDispatcher();
 
     let focused = false;
+
+    //Get categories
+    let categories;
+    storedCategories.subscribe((data) => {
+        categories = data;
+    });
 
     //Determine colors
     let color = categories[activityData.category];

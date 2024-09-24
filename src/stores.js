@@ -1,6 +1,7 @@
 import {readable, writable, derived} from 'svelte/store';
 import {getDateSlug} from './lib/utility-functions.js';
 import {activityData} from './data/activities.js';
+import {categories} from './data/categories.js';
 import {goals} from './data/goals.js';
 
 //Time store code sourced from learn.svelte.dev tutorial: https://learn.svelte.dev/tutorial/readable-stores
@@ -39,4 +40,5 @@ export const elapsedTime = derived(
 export const selectedDate = writable(getDateSlug(new Date()));
 
 export const storedActivities = writable(activityData);
+export const storedCategories = writable(categories);
 export const storedGoals = writable(goals);
